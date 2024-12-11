@@ -13,12 +13,12 @@ public class SignInSignUpPanel extends JPanel {
 
         // Create Sign In panel
         JPanel signInPanel = new JPanel();
-        signInPanel.setLayout(new GridBagLayout()); // Use GridBagLayout for precise alignment
+        signInPanel.setLayout(new GridBagLayout());
         signInPanel.setBackground(backgroundColor);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 400, 10, 400); // Margins around components
+        gbc.insets = new Insets(10, 400, 10, 400);
 
         JLabel signInLabel = new JLabel("Sign In", SwingConstants.CENTER);
         signInLabel.setFont(font);
@@ -28,19 +28,19 @@ public class SignInSignUpPanel extends JPanel {
         usernameLabel.setFont(font);
         usernameLabel.setForeground(textColor);
 
-        JTextField loginUsernameField = new JTextField(20); // Limit to 20 characters
+        JTextField loginUsernameField = new JTextField(20);
         loginUsernameField.setFont(font);
-        
+
         JLabel passwordLabel = new JLabel("Password:");
         passwordLabel.setFont(font);
         passwordLabel.setForeground(textColor);
 
-        JPasswordField loginPasswordField = new JPasswordField(20); // Limit to 20 characters
+        JPasswordField loginPasswordField = new JPasswordField(20);
         loginPasswordField.setFont(font);
 
         JButton loginButton = new JButton("Log In");
         loginButton.setFont(font);
-        
+
         JButton switchToSignUp = new JButton("Go to Sign Up");
         switchToSignUp.setFont(font);
 
@@ -69,7 +69,7 @@ public class SignInSignUpPanel extends JPanel {
 
         // Create Sign Up panel
         JPanel signUpPanel = new JPanel();
-        signUpPanel.setLayout(new GridBagLayout()); // Use GridBagLayout for precise alignment
+        signUpPanel.setLayout(new GridBagLayout());
         signUpPanel.setBackground(backgroundColor);
 
         JLabel signUpLabel = new JLabel("Sign Up", SwingConstants.CENTER);
@@ -80,26 +80,54 @@ public class SignInSignUpPanel extends JPanel {
         nameLabel.setFont(font);
         nameLabel.setForeground(textColor);
 
-        JTextField nameField = new JTextField(20); // Limit to 20 characters
+        JTextField nameField = new JTextField(20);
         nameField.setFont(font);
 
         JLabel usernameSignUpLabel = new JLabel("Username:");
         usernameSignUpLabel.setFont(font);
         usernameSignUpLabel.setForeground(textColor);
 
-        JTextField usernameField = new JTextField(20); // Limit to 20 characters
+        JTextField usernameField = new JTextField(20);
         usernameField.setFont(font);
 
         JLabel passwordSignUpLabel = new JLabel("Password:");
         passwordSignUpLabel.setFont(font);
         passwordSignUpLabel.setForeground(textColor);
 
-        JPasswordField passwordField = new JPasswordField(20); // Limit to 20 characters
+        JPasswordField passwordField = new JPasswordField(20);
         passwordField.setFont(font);
+
+        JLabel ageLabel = new JLabel("Age:");
+        ageLabel.setFont(font);
+        ageLabel.setForeground(textColor);
+
+        JTextField ageField = new JTextField(20);
+        ageField.setFont(font);
+
+        JLabel incomeLabel = new JLabel("Annual Income:");
+        incomeLabel.setFont(font);
+        incomeLabel.setForeground(textColor);
+
+        JTextField incomeField = new JTextField(20);
+        incomeField.setFont(font);
+
+        JLabel occupationLabel = new JLabel("Occupation:");
+        occupationLabel.setFont(font);
+        occupationLabel.setForeground(textColor);
+
+        JTextField occupationField = new JTextField(20);
+        occupationField.setFont(font);
+
+        JLabel expenseLabel = new JLabel("Fixed Monthly Expense:");
+        expenseLabel.setFont(font);
+        expenseLabel.setForeground(textColor);
+
+        JTextField expenseField = new JTextField(20);
+        expenseField.setFont(font);
 
         JButton signUpButton = new JButton("Sign Up");
         signUpButton.setFont(font);
-        
+
         JButton switchToSignIn = new JButton("Go to Sign In");
         switchToSignIn.setFont(font);
 
@@ -127,11 +155,34 @@ public class SignInSignUpPanel extends JPanel {
         signUpPanel.add(passwordField, gbc);
 
         gbc.gridy++;
+        signUpPanel.add(ageLabel, gbc);
+
+        gbc.gridy++;
+        signUpPanel.add(ageField, gbc);
+
+        gbc.gridy++;
+        signUpPanel.add(incomeLabel, gbc);
+
+        gbc.gridy++;
+        signUpPanel.add(incomeField, gbc);
+
+        gbc.gridy++;
+        signUpPanel.add(occupationLabel, gbc);
+
+        gbc.gridy++;
+        signUpPanel.add(occupationField, gbc);
+
+        gbc.gridy++;
+        signUpPanel.add(expenseLabel, gbc);
+
+        gbc.gridy++;
+        signUpPanel.add(expenseField, gbc);
+
+        gbc.gridy++;
         signUpPanel.add(signUpButton, gbc);
 
         gbc.gridy++;
         signUpPanel.add(switchToSignIn, gbc);
-
         // Add panels to CardLayout
         add(signInPanel, "SignIn");
         add(signUpPanel, "SignUp");
@@ -148,6 +199,11 @@ public class SignInSignUpPanel extends JPanel {
         switchToSignIn.addActionListener(e -> {
         	usernameField.setText("");
             passwordField.setText("");
+            incomeField.setText("");
+            expenseField.setText("");
+            occupationField.setText("");
+            ageField.setText("");
+            nameField.setText("");
             CardLayout cl = (CardLayout) getLayout();
             cl.show(this, "SignIn");
         });
@@ -157,6 +213,22 @@ public class SignInSignUpPanel extends JPanel {
         	JOptionPane.showMessageDialog(null, "Login successful!");
         	// TO DO 
         	//MAKE AN ANOTHER GUI FOR FINACNCE WHERE WE SEE our income,expenses, and budget,savings
+        	
+        	EventQueue.invokeLater(() -> {
+                try {
+                    MainMenu frame = new MainMenu(SqlLogin.getUserID(loginUsernameField, loginPasswordField));
+                    
+                    frame.setVisible(true);
+                } catch (Exception s) {
+                    s.printStackTrace();
+                }
+            });
+        	
+        	Window loginWindow = SwingUtilities.getWindowAncestor(loginButton); // Get the parent window of the button
+            if (loginWindow != null) {
+                loginWindow.dispose();
+            }
+        	
         	}
         	else {
         		JOptionPane.showMessageDialog(null, "Invalid username or password.\nWant to sign up instead?");	
@@ -167,7 +239,7 @@ public class SignInSignUpPanel extends JPanel {
         	if(SqlLogin.CheckUsername(usernameField)) {
         		JOptionPane.showMessageDialog(null, "Username is used login instead.");
         	}
-        	else if(SqlLogin.AddUser(usernameField, passwordField)) {
+        	else if(SqlLogin.AddUser(nameField,usernameField, passwordField,ageField,incomeField,occupationField,expenseField)) {
         		JOptionPane.showMessageDialog(null, "Sign Up successful!");	
         	}
         	else {

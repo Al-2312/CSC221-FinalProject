@@ -1,6 +1,8 @@
 package finance_management_system;
 
 import javax.swing.*;
+
+import java.math.BigDecimal;
 import java.sql.*;
 
 public class SqlLogin {
@@ -32,9 +34,15 @@ public class SqlLogin {
 	}// end CheckUsername
 	
 	// when user signs up it will insert it in the database; and say it it true
-	public static boolean AddUser(JTextField usernameField, JPasswordField passwordField) {
+	//nameField,usernameField, passwordField,ageField,incomeField,occupationField,expenseField
+	public static boolean AddUser(JTextField nameField,JTextField usernameField, JPasswordField passwordField,JTextField ageField ,JTextField incomeField ,JTextField occupationField ,JTextField expenseField) {
 		String username = usernameField.getText();
 		String password=  new String(passwordField.getPassword());// need this as it will turn the char array to string 
+		String	name = nameField.getText();
+		int age = Integer.parseInt(ageField.getText());
+		BigDecimal income= new BigDecimal(incomeField.getText());
+		String occupation = occupationField.getText();
+		BigDecimal expense= new BigDecimal(expenseField.getText());
 		if(password.isBlank()) {
 			return false; // was not able to do this on CheckUsername so will be added here 
 		}
@@ -43,13 +51,19 @@ public class SqlLogin {
 		if(!CheckUsername(usernameField)) {
 			try {
 				Connection connection= DriverManager.getConnection( DATABASE_URL,USER_SQL,PASSWORD_SQL);
-				  PreparedStatement statement = connection.prepareStatement("INSERT INTO "+USER_TABLE+"(username,password) VALUES( ? , ?)");
-				  statement.setString(1,username);
-				  statement.setString(2,password);
+				  PreparedStatement statement = connection.prepareStatement("INSERT INTO "+USER_TABLE+"( name, username, password, age, annual_income, occupation, monthly_expense) VALUES( ? , ? , ? , ? , ?, ? , ?)");
+				  statement.setString(1,name);
+				  statement.setString(2,username);
+				  statement.setString(3,password);
+				  statement.setInt(4, age);
+				  statement.setBigDecimal(5, income);
+				  statement.setString(6, occupation);
+				  statement.setBigDecimal(7, expense);
 				  statement.executeUpdate();
 				  return true;
 			}catch(SQLException e) {
 				e.printStackTrace();
+				return false;
 			}
 		}
 		return false;
@@ -71,5 +85,20 @@ public class SqlLogin {
 		  }
 		  return false;  
 	}//end login 
-	
+	public static int getUserID(JTextField usernameField,JPasswordField passwordField) {
+		String username = usernameField.getText();
+		String password=  new String(passwordField.getPassword());// need this as it will turn the char array to string 
+		try {
+			  Connection connection= DriverManager.getConnection( DATABASE_URL,USER_SQL,PASSWORD_SQL);
+			  PreparedStatement statement = connection.prepareStatement("SELECT idUsers FROM "+USER_TABLE+" WHERE (username, password) = ( ? , ?)");
+			  statement.setString(1,username);
+			  statement.setString(2,password);
+			  ResultSet set = statement.executeQuery();
+			  set.next();
+			  return set.getInt("idUsers");
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}//GetUserID
 }
